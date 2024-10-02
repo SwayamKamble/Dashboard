@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Level and Temperature Dashboard</title>
+    <h1>Block A</h1>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .chart-container {
+            width: 45%; /* Adjust the width of each chart */
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: auto;
+            padding: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Water Level and Temperature Dashboard</h1>
+    
+    <!-- Row container for side-by-side charts -->
+    <div class="chart-row">
+        <!-- Container for Temperature chart -->
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+
+        <!-- Container for Water Level chart -->
+        <div class="chart-container">
+            <canvas id="waterLevelChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Include the date-fns adapter for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <script>
+        // Fetch data from ThingSpeak API
+        async function fetchData() {
+            try {
+                const url = 'https://api.thingspeak.com/channels/2372395/feeds.json?api_key=U5L0CB0JVPVPB4VH&results=20';
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.feeds;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
+            }
+        }
+
+        // Prepare data for the charts
+        async function prepareChartData() {
+            const feeds = await fetchData();
+
+            if (feeds.length === 0) {
+                console.error('No data available to plot.');
+                return { timestamps: [], temperature: [], waterLevel: [] };
+            }
+
+            const timestamps = feeds.map(feed => new Date(feed.created_at));
+            const temperature = feeds.map(feed => parseFloat(feed.field3));
+            const waterLevel = feeds.map(feed => parseFloat(feed.field4));
+
+            return { timestamps, temperature, waterLevel };
+        }
+
+        // Draw Temperature Chart
+        async function drawTemperatureChart() {
+            const { timestamps, temperature } = await prepareChartData();
+
+            if (timestamps.length === 0) {
+                alert('No data available to display');
+                return;
+            }
+
+            const ctx = document.getElementById('temperatureChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [
+                        {
+                            label: 'Temperature (°C)',
+                            data: temperature,
+                            borderColor: 'red',
+                            fill: false,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                tooltipFormat: 'MMM dd, HH:mm',
+                                displayFormats: {
+                                    minute: 'MMM dd, HH:mm'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Timestamp'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Temperature (°C)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Draw Water Level Chart
+        async function drawWaterLevelChart() {
+            const { timestamps, waterLevel } = await prepareChartData();
+
+            if (timestamps.length === 0) {
+                alert('No data available to display');
+                return;
+            }
+
+            const ctx = document.getElementById('waterLevelChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [
+                        {
+                            label: 'Water Level (cm)',
+                            data: waterLevel,
+                            borderColor: 'blue',
+                            fill: false,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                tooltipFormat: 'MMM dd, HH:mm',
+                                displayFormats: {
+                                    minute: 'MMM dd, HH:mm'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Timestamp'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Water Level (cm)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Draw both charts
+        drawTemperatureChart();
+        drawWaterLevelChart();
+    </script>
+</body>
+</html>
