@@ -60,6 +60,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <script>
+        // Function to refresh the page every 30 seconds
+        setTimeout(() => {
+            location.reload();
+        }, 30000); // 30 seconds (adjust as needed)
+
         // Fetch data from ThingSpeak API
         async function fetchData() {
             try {
