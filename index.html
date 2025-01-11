@@ -4,42 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Water Level and Temperature Dashboard</title>
-    <h1>Block A</h1>
+    <link href="fav_icon.png" rel="icon" type="image/png">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #121212;
+            color: #ffffff;
         }
         h1 {
             text-align: center;
             padding: 20px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
         }
         .chart-container {
-            width: 45%; /* Adjust the width of each chart */
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
-            background-color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .chart-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: auto;
-            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         canvas {
-            max-width: 100%;
+            width: 100%;
             height: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-row {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+        }
+        @media (max-width: 767px) {
+            .chart-row {
+                display: block;
+            }
+            canvas {
+                max-height: 400px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Water Level and Temperature Dashboard</h1>
-    
+
     <!-- Row container for side-by-side charts -->
     <div class="chart-row">
         <!-- Container for Temperature chart -->
@@ -112,8 +125,9 @@
                         {
                             label: 'Temperature (°C)',
                             data: temperature,
-                            borderColor: 'red',
-                            fill: false,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: true,
                             tension: 0.1
                         }
                     ]
@@ -132,13 +146,29 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Timestamp'
+                                text: 'Timestamp',
+                                color: '#ffffff'
+                            },
+                            ticks: {
+                                color: '#ffffff'
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Temperature (°C)'
+                                text: 'Temperature (°C)',
+                                color: '#ffffff'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                stepSize: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
                             }
                         }
                     }
@@ -164,8 +194,9 @@
                         {
                             label: 'Water Level (cm)',
                             data: waterLevel,
-                            borderColor: 'blue',
-                            fill: false,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true,
                             tension: 0.1
                         }
                     ]
@@ -184,13 +215,29 @@
                             },
                             title: {
                                 display: true,
-                                text: 'Timestamp'
+                                text: 'Timestamp',
+                                color: '#ffffff'
+                            },
+                            ticks: {
+                                color: '#ffffff'
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Water Level (cm)'
+                                text: 'Water Level (cm)',
+                                color: '#ffffff'
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                stepSize: 10
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
                             }
                         }
                     }
